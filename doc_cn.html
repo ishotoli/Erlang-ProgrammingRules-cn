@@ -257,57 +257,41 @@
 
 <h2><a NAME="REF82718"> 3  SW工程原理</a></h2>
 <h3><a NAME="REF59955"> 3.1  从一个模块（module）中尽可能少的导出方法（functions）</a></h3>
-<p>Modules are the basic code structuring entity in Erlang. A module can contain a large number of functions but only functions which are included in the export list of the module can be called from outside the module.
-模块是Erlang中基本的代码结构单位。一个模块包含很多函数，但只有在模块导出列表中的函数才能在外部被调用。
-<p>Seen from the outside the complexity of a module depends upon the number of functions which are exported from the module. A module which exports one or two functions is usually easier to understand than a module which exports dozens of functions.
-从外面看到的一个模块的复杂性取决于从模块导出的函数的数量。一个只导出了一两个函数的模块通常比导出了几十个函数的模块要简单。
-<p>Modules where the ratio of exported/non-exported functions is low are desirable in that a user of the module only needs to understand the functionality of the functions which are exported from the module. 
-通常情况下，低导出/非导出函数比例的模块更受欢迎，因为模块的用户只需要了解模块导出函数的功能就够了。
-<p>In addition, the writer or maintainer of the code in the module can change the internal structure of the module in any appropriate manner provided the external interface remains unchanged.
-此外，该模块中的作者或代码的维护者可以在不修改已导出函数的情况下修改模块的内部结构
+<p>模块是Erlang中基本的代码结构单位。一个模块包含很多函数，但只有在模块导出列表中的函数才能在外部被调用。
+<p>从外面看到的一个模块的复杂性取决于从模块导出的函数的数量。一个只导出了一两个函数的模块通常比导出了几十个函数的模块要简单。
+<p>通常情况下，低导出/非导出函数比例的模块更受欢迎，因为模块的用户只需要了解模块导出函数的功能就够了。
+<p>此外，该模块中的作者或代码的维护者可以在不修改已导出函数的情况下修改模块的内部结构
 <h3><a NAME="REF86715"> 3.2  尽量减少模块间的依赖关系</a></h3>
-<p>A module which calls functions in many different modules will be more difficult to maintain than a module which only calls functions in a few different modules. 
-一个模块如果调用很多不同模块会比调用很少其他模块难维护。
-<p>This is because each time we make a change to a module interface, we have to check all places in the code where this module is called. Reducing the interdependencies between modules simplifies the problem of maintaining these modules.
-这是因为每次我们修改一个模块接口时，我们不得不检查所有调用这个模块的代码。减少模块之间的依赖性会简化模块的维护问题。
-<p>We can simplify the system structure by reducing the number of different modules which are called from a given module.
-我们可以通过减少从一个指定的模块调用其它不同模块的数量简化系统结构
-<p>Note also that it is desirable that the inter-module calling dependencies form a tree and not a cyclic graph. Example:
-同样需要注意的是，理想状态下模块间调用依赖性应该形成树形，而不是一个循环图
+<p>一个模块如果调用很多不同模块会比调用很少其他模块难维护。
+<p>这是因为每次我们修改一个模块接口时，我们不得不检查所有调用这个模块的代码。减少模块之间的依赖性会简化模块的维护问题。
+<p>我们可以通过减少从一个指定的模块调用其它不同模块的数量简化系统结构
+<p>同样需要注意的是，理想状态下模块间调用依赖性应该形成树形，而不是一个循环图
 <p>
 <center><img SRC="images/module-dep-ok.gif" WIDTH="259" HEIGHT="87"></center>
 
 
-<p>But not 不要这样
+<p>不要这样
 <p><center><img SRC="images/module-dep-bad.gif" WIDTH="260" HEIGHT="107"></center>
 
 <h3><a NAME="REF15399"> 3.3  把常用的代码放到库</a></h3>
-<p>Commonly used code should be placed into libraries. The libraries should be collections of related functions. Great effort should be made in ensuring that libraries contain functions of the same type. Thus a library such as <code>lists</code> containing only functions for manipulating lists is a good choice, whereas a library, <code>lists_and_maths </code>containing a combination of functions for manipulating lists and for mathematics is a very bad choice.
-常用的代码应放入库中。这些库应该是相关功能集合。应该努力确保库包含相同类型的函数。因此，一个<code>lists</code>库只包含操作列表的函数是一个不错的选择，而 <code>lists_and_maths </code>库同时包含列表操作和数学运算则是一个糟糕的选择。
-<p>The best library functions have no side effects. Libraries with functions with side effects limit the re-usability.
-库函数最好不要有任何的副作用，有副作用的库和函数会大大限制自身的重用度。
+<p>常用的代码应放入库中。这些库应该是相关功能集合。应该努力确保库包含相同类型的函数。因此，一个<code>lists</code>库只包含操作列表的函数是一个不错的选择，而 <code>lists_and_maths </code>库同时包含列表操作和数学运算则是一个糟糕的选择。
+<p>库函数最好不要有任何的副作用，有副作用的库和函数会大大限制自身的重用度。
 <h3><a NAME="HDR2"> 3.4  隔离&quot;刁钻&quot; 或 &quot;脏&quot;的代码到独立的模块里</a></h3>
-<p>Often a problem can be solved by using a mixture of clean and dirty code. Separate the clean and dirty code into separate modules.
-通常一些问题可以通过混合使用清洁的和脏的代码来解决。最好将清洁的和脏的代码分离到不同的模块当中。
-<p>Dirty code is code that does dirty things. Example:
-脏代码就是用来处理脏事务的，例如：
+<p>通常一些问题可以通过混合使用清洁的和脏的代码来解决。最好将清洁的和脏的代码分离到不同的模块当中。
+<p>脏代码就是用来处理脏事务的，例如：
 <ul>
-<p><li>Uses the process dictionary. 使用了进程字典。（应当包括ETS）
+<p><li>使用了进程字典。（by kaiz : 应当包括ETS）
 <br>
-<p><li>Uses <code>erlang:process_info/1</code> for strange purposes. 为了特殊目的使用了<code>erlang:process_info/1</code>
+<p><li>为了特殊目的使用了<code>erlang:process_info/1</code>
 <br>
-<p><li>Does anything that you are not supposed to do (but have to do). 不得不做一些你预期之外的事情
+<p><li>不得不做一些你预期之外的事情
 <br></ul>
-<p>Concentrate on trying to maximize the amount of clean code and minimize the amount of dirty code. Isolate the dirty code and clearly comment or otherwise document all side effects and problems associated with this part of the code.
-集中于将清洁代码量最大化和脏的代码量最小化，隔离脏的代码，并明确注释或以其他方式记录在这部分代码相关联的所有副作用和问题。
+<p>集中于将清洁代码量最大化和脏的代码量最小化，隔离脏的代码，并明确注释或以其他方式记录在这部分代码相关联的所有副作用和问题。
 
 <h3><a NAME="HDR3"> 3.5  不要假设调用者会如何处理方法返回的结果</a></h3>
-<p>Don't make assumptions about why a function has been called or about what the caller of a function wishes to do with the results.
-不要去假设为什么会调用这个函数或者这个函数的调用者会拿结果去做什么。
-<p>For example, suppose we call a routine with certain arguments which may be invalid. The implementer of the routine should not make any assumptions about what the caller of the function wishes to happen when the arguments are invalid.
-例如，假设我们调用一个子程序，所带的参数可能是无效的，这段子程序的编写者不应该假设调用者希望参数无效的时候希望发生什么。
-<p>Thus we should not write code like
-因此，我们不应该这样写代码：
+<p>不要去假设为什么会调用这个函数或者这个函数的调用者会拿结果去做什么。
+<p>例如，假设我们调用一个子程序，所带的参数可能是无效的，这段子程序的编写者不应该假设调用者希望参数无效的时候希望发生什么。
+<p>因此，我们不应该这样写代码：
 <pre>
 
 do_something(Args) -&gt; 
@@ -321,8 +305,7 @@ do_something(Args) -&gt;
   end.
 </pre>
 
-<p>Instead write something like:
-而应该这样：
+<p>而应该这样：
 <pre>
 do_something(Args) -&gt;
   case check_args(Args) of
@@ -336,44 +319,28 @@ error_report({error, What}) -&gt;
   format_the_error(What).
 </pre>
 
-<p> In the former case the error string is always printed on standard output, in the latter case an error descriptor is returned to the application. The application can now decide what to do with this error descriptor.
-在前一种情况下错误字符串始终打印在标准输出，在后一种情况下的错误描述符返回到应用。应用这时可以决定怎样去处理错误描述符。
-<p>By calling <code>error_report/1</code> the application can convert the error descriptor to a printable string and print it if so required. But this may not be the desired behavior - in any case the decision as to what to do with the result is left to the caller.
-通过调用<code>error_report/1</code>应用程序可以将错误描述符转化为可打印字符，如果需要的话可以将它打印出来。但这也许不是期望的行为，在任何情况下怎样处理这些结果的决定权应该留给调用者。
+<p> 在前一种情况下错误字符串始终打印在标准输出，在后一种情况下的错误描述符返回到应用。应用这时可以决定怎样去处理错误描述符。
+<p>通过调用<code>error_report/1</code>应用程序可以将错误描述符转化为可打印字符，如果需要的话可以将它打印出来。但这也许不是期望的行为，在任何情况下怎样处理这些结果的决定权应该留给调用者。
 <h3><a NAME="HDR4"> 3.6  从代码或行为中抽象出通用的模式</a></h3>
-<p>Whenever you have the same pattern of code in two or more places in the code try to isolate this in a common function and call this function instead of having the code in two different places. Copied code requires much effort to maintain.
-只要你在两个以上的地方使用相同模式的代码，将它们封装成一个通用函数，用调用函数的方式取代同样的代码在两个不同的地方使用。通常拷贝代码更难维护。
-<p>If you see similar patterns of code (i.e. almost identical) in two or more places in the code it is worth taking some time to see if one cannot change the problem slightly to make the different cases the same and then write a small amount of additional code to describe the differences between the two.
-如果你在两个以上的地方看到相似模式的代码（例如几乎一样），值得花一些时间，看看是否不改变问题的情况下使稍微有不同的代码变得相同，然后编写额外的少量代码来描述两者之间的差异。
-<p>Avoid &quot;copy&quot; and &quot;paste&quot; programming, use functions!
-避免&quot;拷贝&quot;和&quot;粘贴&quot;的编码方式，用函数！
+<p>只要你在两个以上的地方使用相同模式的代码，将它们封装成一个通用函数，用调用函数的方式取代同样的代码在两个不同的地方使用。通常拷贝代码更难维护。
+<p>如果你在两个以上的地方看到相似模式的代码（例如几乎一样），值得花一些时间，看看是否不改变问题的情况下使稍微有不同的代码变得相同，然后编写额外的少量代码来描述两者之间的差异。
+<p>避免&quot;拷贝&quot;和&quot;粘贴&quot;的编码方式，用函数！
 <h3><a NAME="HDR5"> 3.7 自顶向下</a></h3>
-<p>Write your program using the top-down fashion, not bottom-up (starting with details). Top-down is a nice way of successively approaching details of the implementation, ending up with defining primitive functions. The code will be independent of representation since the representation is not known when the higher levels of code are designed.
-用自顶向下的方式编程，不要用自下向上的方式（从细节开始）。自顶向下是一种逐步达成实现细节，以定义基本函数结束的非常好的方式。代码是独立表现的，直到设计出不考虑代码表现的更高层代码。
+<p>用自顶向下的方式编程，不要用自下向上的方式（从细节开始）。自顶向下是一种逐步达成实现细节，以定义基本函数结束的非常好的方式。代码是独立表现的，直到设计出不考虑代码表现的更高层代码。
 <h3><a NAME="HDR6"> 3.8  不要优化代码</a></h3>
-<p>Don't optimize your code at the first stage. First make it right, then (if necessary) make it fast (while keeping it right).
-不要从一开始就优化你的代码，首先让它正确运行，然后（必要的话）让它更快（必须保持正确）。
+<p>不要从一开始就优化你的代码，首先让它正确运行，然后（必要的话）让它更快（必须保持正确）。
 <h3><a NAME="HDR7"> 3.9  使用“最少惊动”原则</a></h3>
-<p>The system should always respond in a manner which causes the &quot;least astonishment&quot; to the user - i.e. a user should be able to predict what will happen when they do something and not be astonished by the result.
-系统总应该以&quot;最少惊动&quot;用户的原则响应，比方说用户应该能够预测他们做一些事情会发生什么，而不是被结果惊动到。
-<p>This has to do with consistency, a consistent system where different modules do things in a similar manner will be much easier to understand than a system where each module does things in a different manner.
-这个具有一致性，一致性的系统中不同模块使用相同的原则比系统每个模块使用不同的原则要更容易理解。
-<p>If you get astonished by what a function does, either your function solves the wrong problem or it has a wrong name.
-如果你被函数的行为惊动到了，一般不是你的函数功能有问题，就是函数命名有问题。
+<p>系统总应该以&quot;最少惊动&quot;用户的原则响应，比方说用户应该能够预测他们做一些事情会发生什么，而不是被结果惊动到。
+<p>这个具有一致性，一致性的系统中不同模块使用相同的原则比系统每个模块使用不同的原则要更容易理解。
+<p>如果你被函数的行为惊动到了，一般不是你的函数功能有问题，就是函数命名有问题。
 <h3><a NAME="HDR8"> 3.10  设法消除副作用</a></h3>
-<p>Erlang has several primitives which have side effects. Functions which use these <i>cannot be easily re-used</i> since they cause permanent changes to their environment and you have to know the exact state of the process before calling such routines.
-Erlang有一些原函数有副作用。使用了这些原函数的函数<i>不能轻易被重用</i>，因为他们会导致环境永久性的变化，你在调用这些子过程之前需要了解这些进程的确切状态。
-<p>Write as much as possible of the code with side-effect free code.
-尽量编写没有副作用的代码。
-<p>Maximize the number of pure functions.
-将纯函数的数量最大化。
-<p>Collect together the functions which have side effect and clearly document all the side effects.
-将具有副作用的函数集中在一起，清晰的记录所有的副作用。
-<p>With a little care most code can be written in a side-effect free manner - this will make the system a lot easier to maintain, test and understand.
-随着一点点的关心大多数代码可以以无副作用的方式被写入 - 这将使系统更容易维护，测试和理解。
+<p>Erlang有一些原函数有副作用。使用了这些原函数的函数<i>不能轻易被重用</i>，因为他们会导致环境永久性的变化，你在调用这些子过程之前需要了解这些进程的确切状态。
+<p>尽量编写没有副作用的代码。
+<p>将纯函数的数量最大化。
+<p>将具有副作用的函数集中在一起，清晰的记录所有的副作用。
+<p>随着一点点的关心大多数代码可以以无副作用的方式被写入 - 这将使系统更容易维护，测试和理解。
 <h3><a NAME="HDR9"> 3.11  不要让私有数据结构“泄漏”出模块</a></h3>
-<p>This is best illustrated by a simple example. We define a simple module called queue - to implement queues:
-这最好通过一个简单的例子展示。我们定义了一个简单的模块叫做 queue 来实现队列：
+<p>这最好通过一个简单的例子展示。我们定义了一个简单的模块叫做 queue 来实现队列：
 <pre>
 -module(queue).
 -export([add/2, fetch/1]).
@@ -387,8 +354,7 @@ fetch([]) -&gt;
   empty.
 </pre>
 
-<p>This implements a queue as a list, unfortunately to use this the user must know that the queue is represented as a list. A typical program to use this might contain the following code fragment:
-这个模块用列表实现了一个队列，不幸的是用户必须知道这个队列是用列表实现的。使用这个模块的程序通常会包含如下代码片段：
+<p>这个模块用列表实现了一个队列，不幸的是用户必须知道这个队列是用列表实现的。使用这个模块的程序通常会包含如下代码片段：
 
 <pre>
 NewQ = [], % 千万别这样
@@ -396,10 +362,8 @@ Queue1 = queue:add(joe, NewQ),
 Queue2 = queue:add(mike, Queue1), ....
 </pre>
 
-<p>This is bad - since the user a) needs to know that the queue is represented as a list and b) the implementer cannot change the internal representation of the queue (this they might want to do later to provide a better version of the module).
-这很糟糕，a）用户需要知道这个队列是以列表的方式实现的；b）开发者不能更换queue模块的内部实现（他们很可能希望稍晚一些提供一个更好的版本）
-<p>Better is:
-最好是这样：
+<p>这很糟糕，a）用户需要知道这个队列是以列表的方式实现的；b）开发者不能更换queue模块的内部实现（他们很可能希望稍晚一些提供一个更好的版本）
+<p>最好是这样：
 <pre>
 -module(queue).
 -export([new/0, add/2, fetch/1]).
@@ -416,22 +380,19 @@ fetch([]) -&gt;
   empty.
 </pre>
 
-<p>Now we can write:
-现在我们可以这样使用：
+<p>现在我们可以这样使用：
 <pre>
 NewQ = queue:new(), 
 Queue1 = queue:add(joe, NewQ), 
 Queue2 = queue:add(mike, Queue1), ...
 </pre>
 
-<p>Which is much better and corrects this problem. Now suppose the user needs to know the length of the queue, they might be tempted to write:
-这样就可以很好的修正了这个问题。假设用户需要知道队列长度，他们或许会这样去写：
+<p>这样就可以很好的修正了这个问题。假设用户需要知道队列长度，他们或许会这样去写：
 <pre>
 Len = length(Queue) % 千万别这样
 </pre>
 
-<p>since they know that the queue is represented as a list. Again this is bad programming practice and leads to code which is very difficult to maintain and understand. If they need to know the length of the queue then a length function must be added to the module, thus:
-只要他们知道队列是用list实现的。再次说明这是一种很糟糕的编程实践，会导致代码很难理解和维护。如果他们需要知道队列的长度，就需要往模块中增加一个获取长度的函数，例如：
+<p>只要他们知道队列是用list实现的。再次说明这是一种很糟糕的编程实践，会导致代码很难理解和维护。如果他们需要知道队列的长度，就需要往模块中增加一个获取长度的函数，例如：
 
 <pre>
 -module(queue).
@@ -452,12 +413,9 @@ len(Q) -&gt;
   length(Q).
 </pre>
 
-<p>Now the user can call <code>queue:len(Queue)</code> instead. 
-现在我们可以直接是用<code>queue:len(Queue)</code>来获取长度。
-<p>Here we say that we have &quot;abstracted out&quot; all the details of the queue (the queue is in fact what is called an &quot;abstract data type&quot;).
-险遭我们可以说我们&quot;抽象&quot;出来了queue的所有细节（实际上队列被称为&quot;抽象数据类型&quot;）。
-<p>Why do we go to all this trouble? - the practice of abstracting out internal details of the implementation allows us to change the implementation without changing the code of the modules which call the functions in the module we have changed. So, for example, a better implementation of the queue is as follows:
-为什么我们要自找麻烦？抽象出了实施内部细节的做法使我们能够改变实现而不改变调用其中的函数的代码。举个例子，队列一种更好的实现方式是这样子的：
+<p>现在我们可以直接是用<code>queue:len(Queue)</code>来获取长度。
+<p>险遭我们可以说我们&quot;抽象&quot;出来了queue的所有细节（实际上队列被称为&quot;抽象数据类型&quot;）。
+<p>为什么我们要自找麻烦？抽象出了实施内部细节的做法使我们能够改变实现而不改变调用其中的函数的代码。举个例子，队列一种更好的实现方式是这样子的：
 <pre>
 -module(queue).
 -export([new/0, add/2, fetch/1, len/1]).
@@ -483,16 +441,12 @@ len({X,Y}) -&gt;
 </pre>
 
 <h3><a NAME="HDR10"> 3.12  尽量使代码确定</a></h3>
-<p>A deterministic program is one which will always run in the same manner no matter how many times the program is run. A non-deterministic program may deliver different results each time it is run. For debugging purposes it is a good idea to make things as deterministic as possible. This helps make errors reproducible.
-一个确定性的程序不管运行多少次，都将是以相同的方式运行。一个非确定性的程序每次运行都可能产生不同的结果。从调试角度来说应该尽可能的让事情变成确定性的。这让错误变得可重现。
-<p>For example, suppose one process has to start five parallel processes and then check that they have started correctly, suppose further that the order in which these five are started does not matter.
-举个例子，假设一个进程启动了五个并行进程然后检查它们是否正确启动，进一步假设这五个进程的启动顺序并无影响。
-<p>We could then choose to either start all five in parallel and then check that they have all started correctly but it would be better to start them one at a time and check that each one has started correctly before starting the next one.
-然后，我们可以选择要么并行启动所有五个，然后检查他们是否都正确启动，但更好的做法是启动一个之后检查然后再启动下一个。
+<p>一个确定性的程序不管运行多少次，都将是以相同的方式运行。一个非确定性的程序每次运行都可能产生不同的结果。从调试角度来说应该尽可能的让事情变成确定性的。这让错误变得可重现。
+<p>举个例子，假设一个进程启动了五个并行进程然后检查它们是否正确启动，进一步假设这五个进程的启动顺序并无影响。
+<p>然后，我们可以选择要么并行启动所有五个，然后检查他们是否都正确启动，但更好的做法是启动一个之后检查然后再启动下一个。
 <h3><a NAME="HDR11"> 3.13  不要 &quot;防御性编程&quot;</a></h3>
-<p>A defensive program is one where the programmer does not &quot;trust&quot; the input data to the part of the system they are programming. In general one should not test input data to functions for correctness. Most of the code in the system should be written with the assumption that the input data to the function in question is correct. Only a small part of the code should actually perform any checking of the data. This is usually done when data &quot;enters&quot; the system for the first time, once data has been checked as it enters the system it should thereafter be assumed correct.
-防御性变成是一种编程方式，开发者&quot;不信任&quot;系统给出的输入数据。一般来说不应该检查函数输入数据的正确性。系统中的大部分代码应该假设输入数据是正确的。只有少数部分代码需要对数据进行检查。这个通常是在数据第一次&quot;输入&quot;系统时进行，一旦数据通过了检查进入系统就应该认为它是正确的。
-<p>Example:例如
+<p>防御性变成是一种编程方式，开发者&quot;不信任&quot;系统给出的输入数据。一般来说不应该检查函数输入数据的正确性。系统中的大部分代码应该假设输入数据是正确的。只有少数部分代码需要对数据进行检查。这个通常是在数据第一次&quot;输入&quot;系统时进行，一旦数据通过了检查进入系统就应该认为它是正确的。
+<p>例如:
 
 <pre>
 %% Args: Option is all|normal
@@ -504,14 +458,11 @@ get_server_usage_info(Option, AsciiPid) -&gt;
   end.
 </pre>
 
-<p>The function will crash if <code>Option</code> neither <code>normal</code> nor <code>all</code>, and it should do that. The caller is responsible for supplying correct input.
-当参数<code>Option</code>不为<code>normal</code>或者<code>all</code>的时候这个函数会崩溃，应该要这样。调用者有责任提供正确的函数。
+<p>当参数<code>Option</code>不为<code>normal</code>或者<code>all</code>的时候这个函数会崩溃，应该要这样。调用者有责任提供正确的输入值。
 <h3><a NAME="HDR12"> 3.14  将硬件接口封装成设备驱动</a></h3>
-<p>Hardware should be isolated from the system through the use of device drivers. The device drivers should implement hardware interfaces which make the hardware appear as if they were Erlang processes. Hardware should be made to look and behave like normal Erlang processes. Hardware should appear to receive and send normal Erlang messages and should respond in the conventional manner when errors occur.
-硬件应该从系统通过使用设备驱动程序来分离。设备驱动程序应该实现硬件接口，它使硬件看起来好像也是Erlang进程。硬件应使外观和行为像正常Erlang进程。硬件应该正常的接收和发送消息，并在发生错误时以传统的方式响应。
+<p>硬件应该从系统通过使用设备驱动程序来分离。设备驱动程序应该实现硬件接口，它使硬件看起来好像也是Erlang进程。硬件应使外观和行为像正常Erlang进程。硬件应该正常的接收和发送消息，并在发生错误时以传统的方式响应。
 <h3><a NAME="HDR13"> 3.15  同一个函数中的“要”和“不要”</a></h3>
-<p>Suppose we have a program which opens a file, does something with it and closes it later. This should be coded as:
-假设我们有一个程序需要打开文件，处理一些事情然后关掉它。通常来说应该是这样编码：
+<p>假设我们有一个程序需要打开文件，处理一些事情然后关掉它。通常来说应该是这样编码：
 <pre>
 do_something_with(File) -&gt; 
   case file:open(File, read) of, 
@@ -522,8 +473,7 @@ do_something_with(File) -&gt;
   end.
 </pre>
 
-<p>Note the symmetry in opening the file <code>(file:open)</code>and closing it <code>(file:close</code>) in the same routine. The solution below is much harder to follow and it is not obvious which file that is closed. Don't program it like this:
-注意打开文件的<code>(file:open)</code>和关闭文件的<code>(file:close)</code>在同一段代码中是对称的。下面的解决方案更难理解，而且文件是否被关闭很不明显，不要这样编程：
+<p>注意打开文件的<code>(file:open)</code>和关闭文件的<code>(file:close)</code>在同一段代码中是对称的。下面的解决方案更难理解，而且文件是否被关闭很不明显，不要这样编程：
 <pre>
 do_something_with(File) -&gt; 
   case file:open(File, read) of, 
@@ -544,62 +494,40 @@ func234(..., Stream, ...) -&gt;
 
 <h2><a NAME="REF42466"> 4  错误处理</a></h2>
 <h3><a NAME="HDR14"> 4.1  分离错误处理和正常逻辑处理</a></h3>
-<p>Don't clutter code for the &quot;normal case&quot; with code designed to handle exceptions. As far as possible you should only program the normal case. If the code for the normal case fails, your process should report the error and crash as soon as possible. Don't try to fix up the error and continue. The error should be handled in a different process (<a HREF="#REF26919">See &quot;Each process should only have one &quot;role&quot;&quot; on page 15.</a>).
-不要将正常代码和异常处理代码混到一起。你应该尽可能的只处理正常情况，如果正常情况处理出错了，你的进程应该尽快汇报错误然后崩溃掉。不要尝试修正错误然后继续。错误应该在另一个进程中处理(<a HREF="#REF26919">参见&quot;每个进程只扮演一个&quot;角色&quot;&quot;</a>)
-<p>Clean separation of error recovery code and normal case code should greatly simplify the overall system design.
-错误恢复代码和正确情况代码清晰的分离后，整个系统设计应该会大大简化。
-<p>The error logs which are generated when a software or hardware error is detected will be used at a later stage to diagnose and correct the error. A permanent record of any information that will be helpful in this process should be kept.
-当检测到的软件或硬件错误将产生错误日志，在稍后阶段使用来诊断和纠正错误。有助于这个过程中的任何信息都应保存永久记录。
+<p>不要将正常代码和异常处理代码混到一起。你应该尽可能的只处理正常情况，如果正常情况处理出错了，你的进程应该尽快汇报错误然后崩溃掉。不要尝试修正错误然后继续。错误应该在另一个进程中处理(<a HREF="#REF26919">参见&quot;每个进程只扮演一个&quot;角色&quot;&quot;</a>)
+<p>错误恢复代码和正确情况代码清晰的分离后，整个系统设计应该会大大简化。
+<p>当检测到的软件或硬件错误将产生错误日志，在稍后阶段使用来诊断和纠正错误。有助于这个过程中的任何信息都应保存永久记录。
 <h3><a NAME="HDR15"> 4.2  识别错误根源</a></h3>
-<p>One of the basic elements of system design is identifying which part of the system has to be correct and which part of the system does not have to be correct.
-在系统设计中的一个基本元素是识别系统的那一部分是正常的，那一部分是有问题的。
-<p>In conventional operating system design the kernel of the system is assumed to be, and must be, correct, whereas all user application programs do not necessarily have to be correct. If a user application program fails this will only concern the application where the failure occurred but should not affect the integrity of the system as a whole.
-在常规的操作系统中，内核系统设计时被假定为，而且必须是正确的，而所有用户应用程序不一定是正确的。如果用户应用程序失败，这将仅涉及其中发生的故障，但不应影响系统作为一个整体的完整应用。
-<p>The first part of the system design must be to identify that part of the system which must be correct; we call this the error kernel. Often the error kernel has some kind of real-time memory resident data base which stores the state of the hardware.
-系统设计的第一部分必须识别系统那一部分是正常的；我们称之为错误内核。通常错误内核有某种实时内存持久化数据库用来存储硬件状态。
+<p>在系统设计中的一个基本元素是识别系统的那一部分是正常的，那一部分是有问题的。
+<p>在常规的操作系统中，内核系统设计时被假定为，而且必须是正确的，而所有用户应用程序不一定是正确的。如果用户应用程序失败，这将仅涉及其中发生的故障，但不应影响系统作为一个整体的完整应用。
+<p>系统设计的第一部分必须识别系统那一部分是正常的；我们称之为错误内核。通常错误内核有某种实时内存持久化数据库用来存储硬件状态。
 <h2><a NAME="REF13202"> 5  进程, 服务和消息</a></h2>
 <h3><a NAME="REF20254"> 5.1  在一个模块中实现一个进程</a></h3>
-<p>Code for implementing a single process should be contained in one module. A process can call functions in any library routines but the code for the &quot;top loop&quot; of the process should be contained in a single module. The code for the top loop of a process should not be split into several modules - this would make the flow of control extremely difficult to understand. This does not mean that one should not make use of generic server libraries, these are for helping structuring the control flow.
-实现一个独立进程的代码应该都包含在一个模块中。进程可以调用多个库中的函数，但进程&quot;顶循环&quot;部分的代码应该包含在一个单独模块中。进程定循环的代码不应被分割到多个多个模块中，这通常会导致流程控制很难理解。这并不意味着需要做一个通用服务库，这样处理可以帮助架构控制流。
-<p>Conversely, code for no more than one kind of process should be implemented in a single module. Modules containing code for several different processes can be extremely difficult to understand. The code for each individual process should be broken out into a separate module.
-反过来，只被一种进程调用的代码需要实现在单一模块中。模块包含为多种进程调用的代码会很难理解。每个独立进程的代码应该分割到不同的模块中。
+<p>实现一个独立进程的代码应该都包含在一个模块中。进程可以调用多个库中的函数，但进程&quot;顶循环&quot;部分的代码应该包含在一个单独模块中。进程定循环的代码不应被分割到多个多个模块中，这通常会导致流程控制很难理解。这并不意味着需要做一个通用服务库，这样处理可以帮助架构控制流。
+<p>反过来，只被一种进程调用的代码需要实现在单一模块中。模块包含为多种进程调用的代码会很难理解。每个独立进程的代码应该分割到不同的模块中。
 <h3><a NAME="HDR16"> 5.2  使用进程来构建系统</a></h3>
-<p>Processes are the basic system structuring elements. But don't use processes and message passing when a function call can be used instead.
-进程是基本系统结构元素。但在函数调用可以替代的时候，不要使用进程和消息。
+<p>进程是基本系统结构元素。但在函数调用可以替代的时候，不要使用进程和消息。
 <h3><a NAME="HDR17"> 5.3  注册进程</a></h3>
-<p>Registered processes should be registered with the same name as the module. This makes it easy to find the code for a process.
-注册进程在注册时应当使用和模块相同的名称，这会让找到进程对应的代码变得更容易。
-<p>Only register processes that should live a long time.
-只有会生存很长时间的进程才需要注册。
+<p>注册进程在注册时应当使用和模块相同的名称，这会让找到进程对应的代码变得更容易。
+<p>只有会生存很长时间的进程才需要注册。
 <h3><a NAME="REF34191"> 5.4  为系统中每一个活动分配唯一的进程</a></h3>
-<p>When deciding whether to implement things using sequential or parallel processes then the structure implied by the intrinsic structure of the problem should be used. The main rule is:
-当你决定使用顺序或并行进程实现的时候，应该由该问题固有结构所隐含的结构来实现。主要的规则是：
+<p>当你决定使用顺序或并行进程实现的时候，应该由该问题固有结构所隐含的结构来实现。主要的规则是：
 <p>&quot;Use one parallel process to model each truly concurrent activity in the real world&quot; 
 &quot;用一个并行进程来模拟真实世界中每一个真正的并发活动 &quot; 
-<p>If there is a one-to-one mapping between the number of parallel processes and the number of truly parallel activities in the real world, the program will be easy to understand.
-如果在真实世界中的实际并发活动数和并发进程数是一一对应的，程序代码就非常易于理解。
+<p>如果在真实世界中的实际并发活动数和并发进程数是一一对应的，程序代码就非常易于理解。
 <h3><a NAME="REF26919"> 5.5  每个进程只扮演一个 &quot;角色&quot;</a></h3>
-<p>Processes can have different roles in the system, for example in the client-server model.
-进程可以在系统中扮演不同的角色，例如客户端-服务器模型。
-<p>As far as possible a process should only have one role, i.e. it can be a client or a server but should not combine these roles.
-一个进程尽可能的只有一个角色，例如它可以是客户端或者服务器，但不要把两者混合。
-<p>Other roles which process might have are:
-进程其它的角色可能是：
-<p>Supervisor: watches other processes and restarts them if they fail.
-监控进程：监控其它进程，如果其他进程产生错误了就重启它们。
-<br>Worker: a normal work process (can have errors).
-工作进程：一个普通的工作进程（可以出错）。
-<br>Trusted Worker: not allowed to have errors.
-可信工作进程：不允许有任何错误。
+<p>进程可以在系统中扮演不同的角色，例如客户端-服务器模型。
+<p>一个进程尽可能的只有一个角色，例如它可以是客户端或者服务器，但不要把两者混合。
+<p>进程其它的角色可能是：
+<p>监控进程：监控其它进程，如果其他进程产生错误了就重启它们。
+<br>工作进程：一个普通的工作进程（可以出错）。
+<br>可信工作进程：不允许有任何错误。
 <h3><a NAME="HDR18"> 5.6  只要有可能就要在服务和协议解析中使用通用函数</a></h3>
-<p>In many circumstances it is a good idea to use generic server programs such as the <code>generic</code> server implemented in the standard libraries. Consistent use of a small set of generic servers will greatly simplify the total system structure.
-在许多情况下，使用通用的服务程序例如标准库当中的<code>通用</code>服务，都是一个好主意。一致使用一套通用的服务，将大大简化整个系统的结构。
-<p>The same is possible for most of the protocol handling software in the system.
-在系统中大部分协议处理软件也是一样。
+<p>在许多情况下，使用通用的服务程序例如标准库当中的<code>通用</code>服务，都是一个好主意。一致使用一套通用的服务，将大大简化整个系统的结构。
+<p>在系统中大部分协议处理软件也是一样。
 <h3><a NAME="HDR19"> 5.7  给消息打标签</a></h3>
-<p>All messages should be tagged. This makes the order in the receive statement less important and the implementation of new messages easier. 
-所有的消息都要有标签。这会降低消息接收处理时的顺序不那么重要，添加新消息也可以更简单。
-<p>Don't program like this:
+<p>所有的消息都要有标签。这会降低消息接收处理时的顺序不那么重要，添加新消息也可以更简单。
+<p>不要这样编程：
 <pre>
 loop(State) -&gt;
   receive
@@ -611,13 +539,10 @@ loop(State) -&gt;
   end.
 </pre>
 
-<p>The new message <code>{get_status_info, From, Option}</code> will introduce a conflict if it is placed below the <code>{Mod, Func, Args}</code> message.
-新消息<code>{get_status_info, From, Option}</code>如果放在<code>{Mod, Func, Args}</code>消息处理之后将会产生冲突。
-<p>If messages are synchronous, the return message should be tagged with a new atom, describing the returned message. Example: if the incoming message is tagged <code>get_status_info</code>, the returned message could be tagged <code>status_info</code>. One reason for choosing different tags is to make debugging easier.
-如果消息是同步的，那么返回的消息应该使用一个新原子打上标签，描述这是一个返回的消息。例如：如果接受的消息标签是<code>get_status_info</code>，那么返回的消息标签可以使<code>status_info</code>。使用不同标签的一个原因是使调试更容易一些。
+<p>新消息<code>{get_status_info, From, Option}</code>如果放在<code>{Mod, Func, Args}</code>消息处理之后将会产生冲突。
+<p>如果消息是同步的，那么返回的消息应该使用一个新原子打上标签，描述这是一个返回的消息。例如：如果接受的消息标签是<code>get_status_info</code>，那么返回的消息标签可以使<code>status_info</code>。使用不同标签的一个原因是使调试更容易一些。
 
-<p>This is a good solution:
-这是个好方案：
+<p>这是个好方案：
 
 <pre>
 loop(State) -&gt;
@@ -634,8 +559,7 @@ loop(State) -&gt;
 </pre>
 
 <h3><a NAME="REF28631"> 5.8  处理未知消息</a></h3>
-<p>Every server should have an <code>Other</code> alternative in at least one <code>receive</code> statement. This is to avoid filling up message queues. Example:
-每一个服务应该在<code>receive</code>代码段中包含一个<code>其它</code>额外处理。这样可以避免消息队列被填满。例如：
+<p>每一个服务应该在<code>receive</code>代码段中包含一个<code>其它</code>额外处理。这样可以避免消息队列被填满。例如：
 
 <pre>
 main_loop() -&gt;
@@ -655,11 +579,9 @@ main_loop() -&gt;
 </pre>
 
 <h3><a NAME="HDR20"> 5.9  编写尾递归服务器</a></h3>
-<p>All servers <i>must</i> be tail-recursive, otherwise the server will consume memory until the system runs out of it.
-所有的服务<i>必须</i>是尾递归的，否则服务会一直消耗内存直到系统用尽。
+<p>所有的服务<i>必须</i>是尾递归的，否则服务会一直消耗内存直到系统用尽。
 
-<p>Don't program like this:
-不要像这样编程：
+<p>不要像这样编程：
 <pre>
 loop() -&gt;
   receive
@@ -676,8 +598,7 @@ loop() -&gt;
                 % 这不是尾递归
 </pre>
 
-<p>This is a correct solution:
-这是个正确的方案：
+<p>这是个正确的方案：
 <pre>
 loop() -&gt;
   receive
@@ -693,15 +614,11 @@ loop() -&gt;
 
 </pre>
 
-<p>If you use some kind of server library, for example <code>generic</code>, you automatically avoid doing this mistake.
-如果你使用了某种服务库，例如<code>generic</code>，你就可以自动避免这种错误。
+<p>如果你使用了某种服务库，例如<code>generic</code>，你就可以自动避免这种错误。
 <h3><a NAME="HDR21"> 5.10  接口函数</a></h3>
-<p>Use functions for interfaces whenever possible, avoid sending messages directly. Encapsulate message passing into interface functions. There are cases where you can't do this.
-只要有可能，尽量使用函数作为接口，避免直接传递消息。封装消息到接口函数，有几种情况不能这么用。
-<p>The message protocol is internal information and should be hidden to other modules.
-消息协议是内部信息，需要对外部模块隐藏。
-<p>Example of interface function:
-接口函数示例：
+<p>只要有可能，尽量使用函数作为接口，避免直接传递消息。封装消息到接口函数，有几种情况不能这么用。
+<p>消息协议是内部信息，需要对外部模块隐藏。
+<p>接口函数示例：
 <pre>
 -module(fileserver).
 -export([start/0, stop/0, open_file/1, ...]).
@@ -717,22 +634,16 @@ open_file(FileName) -&gt;
 </pre>
 
 <h3><a NAME="REF20649"> 5.11  超时</a></h3>
-<p>Be careful when using <code>after </code>in <code>receive</code> statements. Make sure that you handle the case when the message arrives later (<a HREF="#REF28631">See &quot;Flush unknown messages&quot; on page 16.</a>).
-要注意，在<code>receive</code>代码段中使用<code>after </code>。确定你处理消息返回延迟后的情况（<a HREF="#REF28631">参见&quot;处理未知消息&quot;</a>）
+<p>要注意，在<code>receive</code>代码段中使用<code>after </code>。确定你处理消息返回延迟后的情况（<a HREF="#REF28631">参见&quot;处理未知消息&quot;</a>）
 <h3><a NAME="HDR22"> 5.12  捕获退出</a></h3>
-<p>As few processes as possible should trap exit signals. Processes should either trap exits or they should not. It is usually very bad practice for a process to &quot;toggle&quot; trapping exits.
-尽可能少的进程可以捕获退出信号。进程要么捕获退出信号要么不能。一个进程&quot;toggle&quot;捕获退出信号通常是个糟糕的实践。
+<p>尽可能少的进程可以捕获退出信号。进程要么捕获退出信号要么不能。一个进程&quot;toggle&quot;捕获退出信号通常是个糟糕的实践。
 <h2><a NAME="REF11301"> 6  多种Elang特定的约定</a></h2>
 <h3><a NAME="HDR23"> 6.1  使用记录为基础数据结构</a></h3>
-<p>Use records as the principle data structure. A record is a tagged tuple and was introduced in Erlang version 4.3 and thereafter (see EPK/NP 95:034). It is similar to <code>struct</code> in C or <code>record</code> in Pascal.
-使用记录作为基础数据结构。记录是带标签的元组，从Erlang 4.3 版本之后开始支持。它类似C当中的<code>struct</code>或者Pascal中的<code>record</code>。
-<p>If the record is to be used in several modules, its definition should be placed in a header file (with suffix .hrl) that is included from the modules. If the record is only used from within one module, the definition of the record should be in the beginning of the file the module is defined in.
-如果记录被多个模块使用，它的定义就应该放到头文件中（带.hrl后缀）然后被其他模块包含。如果记录只在一个模块中使用，那么定义应该放在文件开头，模块定义之内。
-<p>The record features of Erlang can be used to ensure cross module consistency of data structures and should therefore be used by interface functions when passing data structures between modules.
-Erlang的记录功能可以用来确保数据结构跨模块的一致性，因此应该在模块之间通过接口函数传递数据结构时使用。
+<p>使用记录作为基础数据结构。记录是带标签的元组，从Erlang 4.3 版本之后开始支持。它类似C当中的<code>struct</code>或者Pascal中的<code>record</code>。
+<p>如果记录被多个模块使用，它的定义就应该放到头文件中（带.hrl后缀）然后被其他模块包含。如果记录只在一个模块中使用，那么定义应该放在文件开头，模块定义之内。
+<p>Erlang的记录功能可以用来确保数据结构跨模块的一致性，因此应该在模块之间通过接口函数传递数据结构时使用。
 <h3><a NAME="HDR24"> 6.2  使用选择器和构建器</a></h3>
-<p>Use selectors and constructors provided by the record feature for managing instances of records. Don't use matching that explicitly assumes that the record is a tuple. Example:
-使用记录功能提供的选择器和构建器管理记录实例，不要假设记录是元组进行显式匹配。例如：
+<p>使用记录功能提供的选择器和构建器管理记录实例，不要假设记录是元组进行显式匹配。例如：
 <pre>
 demo() -&gt;
   P = #person{name = &quot;Joe&quot;, age = 29},
@@ -740,8 +651,7 @@ demo() -&gt;
   Name2 = P#person.name. % 像这样使用选择器
 </pre>
 
-<p>Don't program like this:
-不要这样编程：
+<p>不要这样编程：
 <pre>
 demo() -&gt;
   P = #person{name = &quot;Joe&quot;, age = 29},
@@ -749,10 +659,8 @@ demo() -&gt;
 </pre>
 
 <h3><a NAME="REF32551"> 6.3  使用带标签的返回值</a></h3>
-<p>Use tagged return values.
-使用带标签的返回值。
-<p>Don't program like this:
-不要这样编程：
+<p>使用带标签的返回值。
+<p>不要这样编程：
 <pre>
 keysearch(Key, [{Key, Value}|_Tail]) -&gt;
   Value; %% 不要返回不带标签的值！
@@ -761,7 +669,6 @@ keysearch(Key, [{_WrongKey, _WrongValue} | Tail]) -&gt;
 keysearch(Key, []) -&gt;
   false.
 </pre>
-Then the {Key, Value} cannot contain the false value. This is the correct solution:
 这样的话{Key, Value}是不能包含false值的，这是正确的方案：
 
 <pre>
@@ -775,21 +682,15 @@ keysearch(Key, []) -&gt;
 </pre>
 
 <h3><a NAME="HDR25"> 6.4  非常小心使用try...catch</a></h3>
-<p>Do not use <code>catch</code> and <code>throw</code> unless you know exactly what you are doing! Use <code>catch</code> and<code> throw</code> as little as possible.
-不要使用<code>catch</code>和<code>throw</code>除非你清楚自己在做什么！尽可能少的使用<code>catch</code>和<code>throw</code>。
-<p><code>Catch</code> and <code>throw</code> can be useful when the program handles complicated and unreliable input (from the outside world, not from your own reliable program) that may cause errors in many places deeply within the code. One example is a compiler.
-<code>catch</code>和<code>throw</code>在程序处理复杂且不可靠的输入（从外界，不是我们可信的程序）时非常有用。一个例子是编译器。
+<p>不要使用<code>catch</code>和<code>throw</code>除非你清楚自己在做什么！尽可能少的使用<code>catch</code>和<code>throw</code>。
+<p><code>catch</code>和<code>throw</code>在程序处理复杂且不可靠的输入（从外界，不是我们可信的程序）时非常有用。一个例子是编译器。
 
 <h3><a NAME="REF18861"> 6.5  非常小心使用进程字典</a></h3>
-<p>Do not use <code>get</code> and <code>put</code> etc. unless you know exactly what you are doing! Use <code>get</code> and <code>put</code> etc. as little as possible.
-不要使用<code>get</code>和<code>put</code>之类的除非你清楚自己在做什么！尽可能少的使用<code>get</code>和<code>put</code>之类的。
-<p>A function that uses the process dictionary can be rewritten by introducing a new argument. 
-一个需要使用进程字典的函数可以通过引入新参数的方式重写。
+<p>不要使用<code>get</code>和<code>put</code>之类的除非你清楚自己在做什么！尽可能少的使用<code>get</code>和<code>put</code>之类的。
+<p>一个需要使用进程字典的函数可以通过引入新参数的方式重写。
 
-<p>Example:
-例如：
-<br>Don't program like this:
-不要这样编码：
+<p>例如：
+<br>不要这样编码：
 <pre>
 tokenize([H|T]) -&gt;
   ...;
@@ -814,26 +715,22 @@ tokenize(Device, []) -&gt;
   end.
 </pre>
 
-<p>The use of <code>get </code>and <code>put</code> will cause a function to behave differently when called with the same input at different occasions. This makes the code hard to read since it is non-deterministic. Debugging will be more complicated since a function using <code>get </code>and <code>put</code> is a function of not only of its argument, but also of the process dictionary. Many of the run time errors in Erlang (for example <code>bad_match</code>) include the arguments to a function, but never the process dictionary.
-使用 <code>get </code>和<code>put</code>会导致函数传入相同的参数时在不同场合有不同行为。这种不确定性会使代码可读性变差。在函数使用<code>get </code>和<code>put</code>之后调试也会变复杂，当函数不再将参数作为唯一来源，还包含进程字典。Erlang运行时报错（例如<code>bad_match</code>）包含参数信息，但不包含进程字典。
+<p>使用 <code>get </code>和<code>put</code>会导致函数传入相同的参数时在不同场合有不同行为。这种不确定性会使代码可读性变差。在函数使用<code>get </code>和<code>put</code>之后调试也会变复杂，当函数不再将参数作为唯一来源，还包含进程字典。Erlang运行时报错（例如<code>bad_match</code>）包含参数信息，但不包含进程字典。
 <h3><a NAME="HDR26"> 6.6  别用import</a></h3>
-<p>Don't use <code>-import</code>, using it makes the code harder to read since you cannot directly see in what module a function is defined. Use <code>exref</code> (Cross Reference Tool) to find module dependencies.
-不要使用<code>-import</code>，这样使用在你不能直接看到模块函数定义的时候降低代码可读性。使用<code>exref</code>来查看模块依赖性关系。（by kaiz: 应该是<code>xref</code>）
+<p>不要使用<code>-import</code>，这样使用在你不能直接看到模块函数定义的时候降低代码可读性。使用<code>exref</code>来查看模块依赖性关系。（by kaiz: 应该是<code>xref</code>）
 <h3><a NAME="HDR27"> 6.7  导出函数</a></h3>
-<p>Make a distinction of why a function is exported. A function can be exported for the following reasons (for example):
-先看一下为什么要导出函数的差异。一个函数因为如下原因需要导出（举个例子）：
+<p>先看一下为什么要导出函数的差异。一个函数因为如下原因需要导出（举个例子）：
 <ul>
-<p><li>It is a user interface to the module. 它是模块的用户接口。
+<p><li>它是模块的用户接口。
 <br>
-<p><li>It is an interface function for other modules. 它是对其它模块的接口函数。
+<p><li>它是对其它模块的接口函数。
 <br>
-<p><li>It is called from <code>apply</code>, <code>spawn</code> etc. but only from within its module. 它被<code>apply</code>, <code>spawn</code>之类的函数调用，但只在模块自身中。
+<p><li> 它被<code>apply</code>, <code>spawn</code>之类的函数调用，但只在模块自身中。
 <br>
 </ul>
 
 
-<p>Use different <code>-export</code> groupings and comment them accordingly. Example:
-使用不同的<code>-export</code>将它们分组并增加对应注释，例如：
+<p>使用不同的<code>-export</code>将它们分组并增加对应注释，例如：
 <pre>
 %% 用户接口
 -export([help/0, start/0, stop/0, info/1]).
@@ -849,21 +746,16 @@ tokenize(Device, []) -&gt;
 
 <h2><a NAME="REF29671"> 7  具体的词法和语法约定</a></h2>
 <h3><a NAME="REF19691"> 7.1  不要写深度嵌套代码</a></h3>
-<p>Nested code is code containing <code>case/if/receive</code> statements within other <code>case/if/receive</code> statements. It is bad programming style to write deeply nested code - the code has a tendency to drift across the page to the right and soon becomes unreadable. Try to limit most of your code to a maximum of two levels of indentation. This can be achieved by dividing the code into shorter functions.
-嵌套代码是一种包含<code>case/if/receive</code>代码段中还包含其他<code>case/if/receive</code>代码段的代码。编写深度嵌套代码是一种糟糕的编程风格，代码会越来越偏右，很快变得不可读。尝试大部分代码限制到最大缩进两个层次。这可以通过将代码分割成较短的函数来实现。
+<p>嵌套代码是一种包含<code>case/if/receive</code>代码段中还包含其他<code>case/if/receive</code>代码段的代码。编写深度嵌套代码是一种糟糕的编程风格，代码会越来越偏右，很快变得不可读。尝试大部分代码限制到最大缩进两个层次。这可以通过将代码分割成较短的函数来实现。
 （by kaiz: 考虑到顶层业务逻辑比较复杂的情况，我个人建议还是将顶层逻辑放在一个函数中保持它的可读性，同时将正常逻辑（或者原理上最经常要执行的逻辑）放在最上，保证阅读时逻辑的通顺性，底层业务逻辑则可以视情况分割成若干函数）
 
 <h3><a NAME="HDR28"> 7.2  不要写非常大的模块</a></h3>
-<p>A module should not contain more than 400 lines of source code. It is better to have several small modules than one large one.
-一个模块代码不应该超过400行，把大模块分成若干小模块往往会更好。
+<p>一个模块代码不应该超过400行，把大模块分成若干小模块往往会更好。
 <h3><a NAME="REF32141"> 7.3  不要写非常长的函数</a></h3>
-<p>Don't write functions with more than 15 to 20 lines of code. Split large function into several smaller ones. Don't solve the problem by writing long lines.
-不要写超过15到20行代码的函数。将大函数分割为若干小函数。不要写很长的语句来解决问题。
+<p>不要写超过15到20行代码的函数。将大函数分割为若干小函数。不要写很长的语句来解决问题。
 <h3><a NAME="HDR29"> 7.4  不要写非常长的语句</a></h3>
-<p>Don't write very long lines. A line should not have more than 80 characters. (It will for example fit into an A4 page.)
-不要写非常长的语句。一行代码应该不超过80字符（例如它将适合一张A4纸。）
-<p>In Erlang 4.3 and thereafter string constants will be automatically concatenated. 
-Erlang 4.3版本以上支持字符串常量自动连接。
+<p>不要写非常长的语句。一行代码应该不超过80字符（例如它将适合一张A4纸。）
+<p>Erlang 4.3版本以上支持字符串常量自动连接。
 例如:
 
 <pre>
@@ -872,61 +764,45 @@ io:format(&quot;Name: ~s, Age: ~w, Phone: ~w ~n&quot;
 </pre>
 
 <h3><a NAME="REF10726"> 7.5  变量命名</a></h3>
-<p>Choose meaningful variable names - this is very difficult. 
-选择一个含义丰富的变量名通常都很难。
-<p>If a variable name consists of several words, use &quot;_&quot; or a capitalized letter to separate them. Example: <code>My_variable</code> or <code>MyVariable</code>.
-如果一个变量名由多个单词组成，需要用&quot;_&quot;或者首字母大写来分隔它们，例如：<code>My_variable</code>或者 <code>MyVariable</code>.
-<p>Avoid using &quot;_&quot; as don't care variable, use variables beginning with &quot;_&quot; instead. Example: <code>_Name</code>. If you at a later stage need the value of the variable, you just remove the leading underscore. You will not have problem finding what underscore to replace and the code will be easier to read.
-避免使用&quot;_&quot;作为通配变量，使用以&quot;_&quot;开头的变量名称，例如：<code>_Name</code>。如果你稍候需要使用变量的值，你只需要删除开头的下划线。替换掉这些下划线不会有任何问题，也会让代码变得更易读。
+<p>选择一个含义丰富的变量名通常都很难。
+<p>如果一个变量名由多个单词组成，需要用&quot;_&quot;或者首字母大写来分隔它们，例如：<code>My_variable</code>或者 <code>MyVariable</code>.
+<p>避免使用&quot;_&quot;作为通配变量，使用以&quot;_&quot;开头的变量名称，例如：<code>_Name</code>。如果你稍候需要使用变量的值，你只需要删除开头的下划线。替换掉这些下划线不会有任何问题，也会让代码变得更易读。
 
 <h3><a NAME="REF17122"> 7.6  函数命名</a></h3>
-<p>The function name must agree exactly with what the function does. It should return the kind of arguments implied by the function name. It should not surprise the reader. Use conventional names for conventional functions (<code>start</code>, <code>stop</code>, <code>init</code>, <code>main_loop</code>).
-函数名称必须与函数所做的事情一致。函数的返回值应该在函数名中有暗示。函数名称不应该让读者惊异。传统功能则使用常用名字（<code>start</code>, <code>stop</code>, <code>init</code>, <code>main_loop</code>）。
-<p>Functions in different modules that solves the same problem should have the same name. Example: <code>Module:module_info()</code>.
-在不同模块中实现同样功能的函数应该使用同样的名称。例如：<code>Module:module_info()</code>。
-<p>Bad function names is one of the most common programming errors - good choice of names is very difficult!
-糟糕的函数名是一种最常见的编程错误 - 选个好的函数名的确不容易！
-<p>Some kind of naming convention is very useful when writing lots of different functions. For example, the name prefix &quot;<code>is_</code>&quot; could be used to signify that the function in question returns the atom true or false.
-在编写大量不同的函数时，一种统一的命名约定会起到非常大的帮助。例如，以&quot;<code>is_</code>&quot;为前缀的命名可以用来标示处理这个问题的函数会返回一个原子是true或者false。
+<p>函数名称必须与函数所做的事情一致。函数的返回值应该在函数名中有暗示。函数名称不应该让读者惊异。传统功能则使用常用名字（<code>start</code>, <code>stop</code>, <code>init</code>, <code>main_loop</code>）。
+<p>在不同模块中实现同样功能的函数应该使用同样的名称。例如：<code>Module:module_info()</code>。
+<p>糟糕的函数名是一种最常见的编程错误 - 选个好的函数名的确不容易！
+<p>在编写大量不同的函数时，一种统一的命名约定会起到非常大的帮助。例如，以&quot;<code>is_</code>&quot;为前缀的命名可以用来标示处理这个问题的函数会返回一个原子是true或者false。
 <pre>
 is_...() -&gt; true | false
 check_...() -&gt; {ok, ...} | {error, ...}
 </pre>
 
 <h3><a NAME="HDR30"> 7.7  模块命名</a></h3>
-<p>Erlang has a flat module structure (i.e. there are not modules within modules). Often, however, we might like to simulate the effect of a hierarchical module structure. This can be done with sets of related modules having the same module prefix.
-Erlang的模块结构是平面化的（也就是说没有内嵌模块）。然而，通常我们可能希望模拟分层模块结构的效果。这可以通过让相关模块集拥有同样的前缀来实现
-<p>If, for example, an ISDN handler is implemented using five different and related modules. These module should be given names such as:
-例如，假设一个ISDN处理器是由5个不同但又相关的模块实现的，这些模块应该这样命名：
+<p>Erlang的模块结构是平面化的（也就是说没有内嵌模块）。然而，通常我们可能希望模拟分层模块结构的效果。这可以通过让相关模块集拥有同样的前缀来实现
+<p>例如，假设一个ISDN处理器是由5个不同但又相关的模块实现的，这些模块应该这样命名：
 <pre>
 isdn_init 
 isdn_partb 
 isdn_...
 </pre>
 <h3><a NAME="HDR31"> 7.8  风格一致的编程</a></h3>
-<p>A consistent programming style will help you, and other people, to understand your code. Different people have different styles concerning indentation, usage of spaces etc.
-保持一致的编程风格会让你和其他人，更好的理解你的打码。不同的人有不同风格的缩进，空格用法等等。
-<p>For example you might like to write tuples with a single comma between the elements:
-例如你在写元组的时候喜欢在元素之间只用一个逗号：
+<p>保持一致的编程风格会让你和其他人，更好的理解你的打码。不同的人有不同风格的缩进，空格用法等等。
+<p>例如你在写元组的时候喜欢在元素之间只用一个逗号：
 <pre>
 {12,23,45}
 </pre>
-<p>Other people might use a comma followed by a blank:
-其他人可能喜欢用逗号加空格：
+<p>其他人可能喜欢用逗号加空格：
 <pre>
 {12, 23, 45}
 </pre>
-<p>Once you have adopted style - stick to it.
-一旦你适应了一个风格就坚持使用。
-<p>Within a larger project, the same style should be used in all parts.
-在一个大项目中，应该使用同一种风格。
+<p>一旦你适应了一个风格就坚持使用。
+<p>在一个大项目中，应该使用同一种风格。
 <h2><a NAME="REF14536"> 8  为代码提供文档</a></h2>
 <h3><a NAME="HDR32"> 8.1  属性代码</a></h3>
-<p>You must always correctly attribute all code in the module header. Say where all ideas contributing to the module came from - if your code was derived from some other code say where you got this code from and who wrote it.
-你必须经常为模块头正确标记属性。说得清有助于模块的所有想法是从哪里来的 - 如果你的代码是从一些其他的代码衍生说你来自哪里得到这个代码是谁写的。
-<p>Never steal code - stealing code is taking code from some other module editing it and<i> forgetting</i> to say who wrote the original. 
-不要窃取代码 - 指的是从其他模块拷贝过来代码却<i>忘记</i>标识谁是原来的作者。
-<p>Examples of useful attributes are:
+<p>你必须经常为模块头正确标记属性。说得清有助于模块的所有想法是从哪里来的 - 如果你的代码是从一些其他的代码衍生说你来自哪里得到这个代码是谁写的。
+<p>不要窃取代码 - 指的是从其他模块拷贝过来代码却<i>忘记</i>标识谁是原来的作者。
+<p>一些有用的属性例子：
 <pre>
 -revision('Revision: 1.14 ').
 -created('Date: 1995/01/01 11:21:11 ').
@@ -936,36 +812,24 @@ isdn_...
 </pre>
 (by kaiz : 欢迎给自己的代码加上属性注释，暂不做硬性要求)
 <h3><a NAME="HDR33"> 8.2  在代码中提供引用的规范</a></h3>
-<p>Provide cross references in the code to any documents relevant to the understanding of the code. For example, if the code implements some communication protocol or hardware interface give an exact reference with document and page number to the documents that were used to write the code.
-提供有助于理解代码的代码交叉引用文档。例如，如果代码实现了某个通讯协议或硬件接口，最好在代码中标识具体引用的是哪个文档哪一页的内容。
+<p>提供有助于理解代码的代码交叉引用文档。例如，如果代码实现了某个通讯协议或硬件接口，最好在代码中标识具体引用的是哪个文档哪一页的内容。
 <h3><a NAME="HDR34"> 8.3  为错误提供文档</a></h3>
-<p>All errors should be listed together with an English description of what they mean in a separate document (<a HREF="#REF45959">See &quot;Error Messages&quot; on page 32.</a>)
-所有的错误应该一起列在一份单独的文档中（<a HREF="#REF45959">参见&quot;错误消息&quot;</a>）
-<p>By errors we mean errors which have been detected by the system.
-这里的错误指的是系统检测到的错误。
-<p>At a point in your program where you detect a logical error call the error logger thus:
-当你的程序检测到一个逻辑错误的时候可以这样调用错误记录器：
+<p>所有的错误应该一起列在一份单独的文档中（<a HREF="#REF45959">参见&quot;错误消息&quot;</a>）
+<p>这里的错误指的是系统检测到的错误。
+<p>当你的程序检测到一个逻辑错误的时候可以这样调用错误记录器：
 <pre>
 error_logger:error_msg(Format, {Descriptor, Arg1, Arg2, ....})
 </pre>
-<p>And make sure that the line <code>{Descriptor, Arg1,...}</code> is added to the error message documents.
-确保<code>{Descriptor, Arg1,...}</code>中的内容已经添加到错误消息文档中。
+<p>确保<code>{Descriptor, Arg1,...}</code>中的内容已经添加到错误消息文档中。
 <h3><a NAME="HDR35"> 8.4  为消息中的所有基础数据结构提供文档</a></h3>
-<p>Use tagged tuples as the principle data structure when sending messages between different parts of the system.
-在系统不同部分传递消息时应该使用带标签的元组作为基础数据结构。
-<p>The record features of Erlang (introduced in Erlang versions 4.3 and thereafter) can be used to ensure cross module consistency of data structures.
-Erlang的记录功能（自4.3版引入）可以用来保证跨模块数据结构的一致性。
-<p>An English description of all these data structure should be documented (<a HREF="#REF47531">See &quot;Message Descriptions&quot; on page 32.</a>).
-所有的数据结构应当有一份文档（<a HREF="#REF47531">参见&quot;消息描述&quot;</a>）
+<p>在系统不同部分传递消息时应该使用带标签的元组作为基础数据结构。
+<p>Erlang的记录功能（自4.3版引入）可以用来保证跨模块数据结构的一致性。
+<p>所有的数据结构应当有一份文档（<a HREF="#REF47531">参见&quot;消息描述&quot;</a>）
 <h3><a NAME="HDR36"> 8.5  注释</a></h3>
-<p>Comments should be clear and concise and avoid unnecessary wordiness. Make sure that comments are kept up to date with the code. Check that comments add to the understanding of the code. Comments should be written in English. 
-注释应该简洁明了，避免不必要的赘言。确保最新的代码都有注释。检查代码对应注释的含义。
-<p>Comments about the module shall be without indentation and start with three percent characters (<code>%%%)</code>, (<a HREF="#REF13816">See &quot;File Header, description&quot; on page 29.</a>).
-模块注释应当没有缩进且以三个百分号（<code>%%%</code>）开始(<a HREF="#REF13816">参见&quot;文件头描述&quot;</a>)
-<p>Comments about a function shall be without indentation and start with two percent characters (<code>%%</code>), (<a HREF="#REF20875">See &quot;Comment each function&quot; on page 27.</a>).
-函数注释应当没有缩进且以两个百分号(<code>%%</code>)开始（<a HREF="#REF20875">参见&quot;为每个函数提供注释&quot; on page 27.</a>）
-<p>Comments within Erlang code shall start with one percent character (<code>%</code>). If a line only contains a comment, it shall be indented as Erlang code. This kind of comment shall be placed above the statement it refers to. If the comment can be placed at the same line as the statement, this is preferred.
-Erlang代码中的注释应该以一个百分号(<code>%</code>)开始。如果一行只有一句注释，应该和Erlang代码一样缩进。这种注释应当在引用到的语句上方。注释最好能和注释的语句放在同一行。
+<p>注释应该简洁明了，避免不必要的赘言。确保最新的代码都有注释。检查代码对应注释的含义。
+<p>模块注释应当没有缩进且以三个百分号（<code>%%%</code>）开始(<a HREF="#REF13816">参见&quot;文件头描述&quot;</a>)
+<p>函数注释应当没有缩进且以两个百分号(<code>%%</code>)开始（<a HREF="#REF20875">参见&quot;为每个函数提供注释&quot; on page 27.</a>）
+<p>Erlang代码中的注释应该以一个百分号(<code>%</code>)开始。如果一行只有一句注释，应该和Erlang代码一样缩进。这种注释应当在引用到的语句上方。注释最好能和注释的语句放在同一行。
 <pre>
 %% 函数注释
 some_useful_functions(UsefulArgugument) -&gt;
@@ -976,26 +840,19 @@ some_useful_functions(UsefulArgugument) -&gt;
 
 </pre>
 <h3><a NAME="REF20875"> 8.6  为每个函数提供注释</a></h3>
-<p>The important things to document are:
-需要编写文档的重要事项有：
+<p>需要编写文档的重要事项有：
 <ul>
-<p><li>The purpose of the function.
-函数的目的。
+<p><li>函数的目的。
 <br>
-<p><li>The domain of valid inputs to the function. That is, data structures of the arguments to the functions together with their meaning.
-函数的有效输入域。包括函数参数的数据结构和他们的含义。
+<p><li>函数的有效输入域。包括函数参数的数据结构和他们的含义。
 <br>
-<p><li>The domain of the output of the function. That is, all possible data structures of the return value together with their meaning.
-函数的输出域。包括所有可能返回的数据结构和它们的含义。
+<p><li>函数的输出域。包括所有可能返回的数据结构和它们的含义。
 <br>
-<p><li>If the function implements a complicated algorithm, describe it.
-如果函数实现了一个复杂算法，需要描述一下。
+<p><li>如果函数实现了一个复杂算法，需要描述一下。
 <br>
-<p><li>The possible causes of failure and exit signals which may be generated by <code>exit/1</code>, <code>throw/1</code> or any non-obvious run time errors. Note the difference between failure and returning an error.
-可能产生的错误或退出信号，由<code>exit/1</code>, <code>throw/1</code>或者其他不明显的运行时错误产生的消息。注意区分函数执行失败和返回错误。
+<p><li>可能产生的错误或退出信号，由<code>exit/1</code>, <code>throw/1</code>或者其他不明显的运行时错误产生的消息。注意区分函数执行失败和返回错误。
 <br>
-<p><li>Any side effect of the function.
-函数的副作用。
+<p><li>函数的副作用。
 <br></ul>
 
 
@@ -1079,46 +936,33 @@ get_server_statistics(Option, Pid) when pid(Pid) -&gt;
 <p><b>If you know of any weakness, bugs, badly tested features, make a note of them in a special comment, don't try to hide them. If any part of the module is incomplete, add a special comment. </b>Add comments about anything which will be of help to future maintainers of the module.If the product of which the module you are writing is a success, it may still be changed and improved in ten years time by someone you may never meet.
 
 <h3><a NAME="HDR40"> 8.11  不要注释原来的代码——直接删掉</a></h3>
-<p>Add a comment in the revision history to that effect. Remember the source code control system will help you!
-删除代码后只需要在版本历史中加上注释，记住版本管理系统会帮你（保存删掉的代码）！
+<p>删除代码后只需要在版本历史中加上注释，记住版本管理系统会帮你（保存删掉的代码）！
 <h3><a NAME="HDR41"> 8.12  使用代码管理系统</a></h3>
-<p>All non trivial projects must use a source code control system such as RCS, CVS or Clearcase to keep track of all modules.
-所有重要项目都必须用源代码管理系统例如RCS，CVS或Clearcase用来跟踪所有的模块。
+<p>所有重要项目都必须用源代码管理系统例如RCS，CVS或Clearcase用来跟踪所有的模块。
 <h2><a NAME="REF66257"> 9  常犯错误：</a></h2>
 
 <ul>
-<p><li>Writing functions which span many pages (<a HREF="#REF32141">See &quot;Don't write very long functions&quot; on page 23.</a>).
-编写跨了很多页的函数(<a HREF="#REF32141">参见&quot;不要写非常长的函数&quot;</a>)
+<p><li>编写跨了很多页的函数(<a HREF="#REF32141">参见&quot;不要写非常长的函数&quot;</a>)
 <br>
-<p><li>Writing functions with deeply nested if's receive's, case's etc (<a HREF="#REF19691">See &quot;Don't write deeply nested code&quot; on page 23.</a>).
-编写深度嵌套if、receive、case等的函数。(<a HREF="#REF19691">参见&quot;不要深度嵌套代码&quot;</a>)
+<p><li>编写深度嵌套if、receive、case等的函数。(<a HREF="#REF19691">参见&quot;不要深度嵌套代码&quot;</a>)
 <br>
-<p><li>Writing badly typed functions (<a HREF="#REF32551">See &quot;Use tagged return values&quot; on page 19.</a>).
-编写糟糕返回类型的函数(<a HREF="#REF32551">参见&quot;使用带标签的返回值&quot;</a>)
+<p><li>编写糟糕返回类型的函数(<a HREF="#REF32551">参见&quot;使用带标签的返回值&quot;</a>)
 <br>
-<p><li>Function names which do not reflect what the functions do (<a HREF="#REF17122">See &quot;Function names&quot; on page 24.</a>).
-函数名称并未反应其作用(<a HREF="#REF17122">参见&quot;函数命名&quot; on page 24.</a>)
+<p><li>函数名称并未反应其作用(<a HREF="#REF17122">参见&quot;函数命名&quot;</a>)
 <br>
-<p><li>Variable names which are meaningless (<a HREF="#REF10726">See &quot;Variable names&quot; on page 23.</a>).
-变量名称毫无意义(<a HREF="#REF10726">参见&quot;变量命名&quot;</a>)
+<p><li>变量名称毫无意义(<a HREF="#REF10726">参见&quot;变量命名&quot;</a>)
 <br>
-<p><li>Using processes when they are not needed (<a HREF="#REF34191">See &quot;Assign exactly one parallel process to each true concurrent activity in the system&quot; on page 14.</a>).
-使用多余的进程(<a HREF="#REF34191">参见&quot;为系统中每一个活动分配唯一的进程&quot;</a>)
+<p><li>使用多余的进程(<a HREF="#REF34191">参见&quot;为系统中每一个活动分配唯一的进程&quot;</a>)
 <br>
-<p><li>Badly chosen data structures (Bad representations).
-糟糕的数据类型选择（糟糕的数据表现）。
+<p><li>糟糕的数据类型选择（糟糕的数据表现）。
 <br>
-<p><li>Bad comments or no comments at all (always document arguments and return value).
-糟糕的注释或者完全没有注释（参数和返回值总要有吧）。
+<p><li>糟糕的注释或者完全没有注释（参数和返回值总要有吧）。
 <br>
-<p><li>Unindented code.
-未缩进的代码。
+<p><li>未缩进的代码。
 <br>
-<p><li>Using put/get (<a HREF="#REF18861">See &quot;Use the process dictionary with extreme care&quot; on page 20.</a>).
-使用了 put/get (<a HREF="#REF18861">参见&quot;非常小心使用进程字典&quot;</a>)
+<p><li>使用了 put/get (<a HREF="#REF18861">参见&quot;非常小心使用进程字典&quot;</a>)
 <br>
-<p><li>No control of the message queues (<a HREF="#REF28631">See &quot;Flush unknown messages&quot; on page 16.</a> and <a HREF="#REF20649">See &quot;Time-outs&quot; on page 18.</a>).
-没有对消息队列进行控制(<a HREF="#REF28631">参见&quot;处理未知消息&quot;</a> 和 <a HREF="#REF20649">参见 &quot;超时&quot;</a>)
+<p><li>没有对消息队列进行控制(<a HREF="#REF28631">参见&quot;处理未知消息&quot;</a> 和 <a HREF="#REF20649">参见 &quot;超时&quot;</a>)
 <br>
 </ul>
 
